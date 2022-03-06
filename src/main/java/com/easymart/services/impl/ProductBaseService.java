@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.easymart.entities.CategoryEntity;
 import com.easymart.entities.ProductEntity;
 import com.easymart.models.Product;
 import com.easymart.repositories.ProductRepository;
@@ -58,7 +59,10 @@ public class ProductBaseService implements ProductService{
 			result.setDescription(model.getDescription());
 			result.setPrice(model.getPrice());
 			result.setPhoto(model.getPhoto());
-			
+			if(model.getCategory() != null) {
+				result.setCategory(new CategoryEntity(model.getCategory()));
+			}
+						
 			return repository.save(result).toModel();
 		}).orElseGet(() -> {
 			return null;

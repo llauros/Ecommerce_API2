@@ -2,17 +2,22 @@ package com.easymart.entities;
 
 import java.math.BigDecimal;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.easymart.models.Category;
 import com.easymart.models.Product;
 
 @Entity
@@ -39,6 +44,10 @@ public class ProductEntity {
 
 	@Column(name = "foto")
 	private String photo;
+	
+    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.REFRESH)
+    @JoinColumn(name = "id_categoria")
+	private CategoryEntity category;
 
 	public ProductEntity() {}
 
@@ -49,11 +58,12 @@ public class ProductEntity {
 		this.photo = model.getPhoto();
 	}
 	
-	public ProductEntity(String name, String description, BigDecimal price, String photo) {
+	public ProductEntity(String name, String description, BigDecimal price, String photo, CategoryEntity category) {
 		this.name = name;
 		this.description = description;
 		this.price = price;
 		this.photo = photo;
+		this.category = category;
 	}
 
 	public Long getId() {
@@ -70,23 +80,29 @@ public class ProductEntity {
 	}
 	public String getDescription() {
 		return description;
-	}
+	}	
 	public void setDescription(String description) {
 		this.description = description;
-	}
+	}	
 	public BigDecimal getPrice() {
 		return price;
-	}
+	}	
 	public void setPrice(BigDecimal price) {
 		this.price = price;
-	}
+	}	
 	public String getPhoto() {
 		return photo;
 	}
 	public void setPhoto(String photo) {
 		this.photo = photo;
+	}	
+	public CategoryEntity getCategory() {
+		return category;
 	}
-	
+	public void setCategory(CategoryEntity category) {
+		this.category = category;
+	}
+
 	public Product toModel() {
 		Product model = new Product();
 
@@ -95,6 +111,9 @@ public class ProductEntity {
 		model.setDescription(this.description);
 		model.setPrice(this.price);
 		model.setPhoto(this.photo);
+		if(this.category != null) {
+			model.setCategory(this.category.toModel());
+		}
 		
 		return model;
 	}

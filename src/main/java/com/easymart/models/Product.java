@@ -9,6 +9,7 @@ public class Product {
 	private String description;
 	private BigDecimal price;
 	private String photo;
+	private Category category;
 	
 	public Long getId() {
 		return id;
@@ -40,4 +41,11 @@ public class Product {
 	public void setPhoto(String photo) {
 		this.photo = photo;
 	}
+	public Category getCategory() {
+		return category;
+	}
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+	
 }

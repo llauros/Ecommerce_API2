@@ -10,13 +10,17 @@ public class ProductPresenter {
 	private String description;
 	private BigDecimal price;
 	private String photo;
+	private CategoryPresenter category;
 	
 	public ProductPresenter(Product model) {
 		this.id = model.getId();
 		this.name = model.getName();
 		this.description = model.getDescription();
 		this.price = model.getPrice();
-		this.photo = model.getPhoto();	
+		this.photo = model.getPhoto();
+		if(model.getCategory() != null) {
+			this.category = new CategoryPresenter(model.getCategory());
+		}
 	}
 	
 	public Long getId() {
@@ -34,5 +38,7 @@ public class ProductPresenter {
 	public String getPhoto() {
 		return photo;
 	}
-
+	public CategoryPresenter getCategory() {
+		return category;
+	}
 }
