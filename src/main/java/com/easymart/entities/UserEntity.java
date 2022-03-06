@@ -37,18 +37,18 @@ public class UserEntity {
     private String password;
 
     public UserEntity() {}
-    
-    public UserEntity(String name, String email, String password) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-    }
 	
     public UserEntity(User model) {
         this.name = model.getName();
         this.email = model.getEmail();
         this.password = model.getPassword();
         this.phone = model.getPhone();
+    }
+    
+    public UserEntity(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
     }
 
     public Long getId() {
