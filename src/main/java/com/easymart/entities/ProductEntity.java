@@ -1,6 +1,9 @@
 package com.easymart.entities;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,6 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
@@ -17,7 +22,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.easymart.models.Category;
 import com.easymart.models.Product;
 
 @Entity
@@ -27,27 +31,27 @@ public class ProductEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotBlank(message = "O campo nome não pode estar em branco ou ser nulo")
-	@Size(min = 3, max = 100, message = "O campo nome não pode conter menos que {min} e não deve ultrapassar a {max} caracteres")
 	@Column(name = "nome", length = 100)
 	private String name;
 
-	@NotBlank(message = "O campo descricao não pode estar em branco ou ser nulo")
-	@Size(min = 3, max = 500, message = "O campo descricao não pode conter menos que {min} e não deve ultrapassar a {max} caracteres")
 	@Column(name = "descricao", length = 500)
 	private String description;
 
-	@NotNull
-	@Digits(integer = 5, fraction = 2, message = "Valor incorreto")
 	@Column(name = "preco")
 	private BigDecimal price;
 
 	@Column(name = "foto")
 	private String photo;
 	
-    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.REFRESH)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "id_categoria")
 	private CategoryEntity category;
+    
+    @ManyToMany
+    @JoinTable(name = "tb_produto_subcategoria",
+    joinColumns = @JoinColumn(name = "id_produto"),
+    inverseJoinColumns = @JoinColumn(name = "id_subcategoria"))
+    private Set<SubCategoryEntity> subCategories = new HashSet<>();
 
 	public ProductEntity() {}
 
@@ -58,12 +62,11 @@ public class ProductEntity {
 		this.photo = model.getPhoto();
 	}
 	
-	public ProductEntity(String name, String description, BigDecimal price, String photo, CategoryEntity category) {
+	public ProductEntity(String name, String description, BigDecimal price, String photo) {
 		this.name = name;
 		this.description = description;
 		this.price = price;
 		this.photo = photo;
-		this.category = category;
 	}
 
 	public Long getId() {
@@ -102,6 +105,12 @@ public class ProductEntity {
 	public void setCategory(CategoryEntity category) {
 		this.category = category;
 	}
+	public Set<SubCategoryEntity> getSubCategories() {
+		return subCategories;
+	}
+	public void setSubCategories(Set<SubCategoryEntity> subCategories) {
+		this.subCategories = subCategories;
+	}
 
 	public Product toModel() {
 		Product model = new Product();
@@ -113,6 +122,9 @@ public class ProductEntity {
 		model.setPhoto(this.photo);
 		if(this.category != null) {
 			model.setCategory(this.category.toModel());
+		}
+		if(this.subCategories != null) {
+			model.setSubCategories(this.subCategories.stream().map(a -> a.toModel()).collect(Collectors.toSet()));
 		}
 		
 		return model;

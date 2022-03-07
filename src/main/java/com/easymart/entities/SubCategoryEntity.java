@@ -1,21 +1,24 @@
 package com.easymart.entities;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import com.easymart.models.Category;
+import com.easymart.models.SubCategory;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "tb_categoria")
-public class CategoryEntity {
+@Table(name = "tb_subcategoria")
+public class SubCategoryEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,20 +29,21 @@ public class CategoryEntity {
 	@Column(name = "nome", length = 100)
 	private String name;
 	
-	/*@OneToMany(mappedBy = "category")
-	private Set<SubCategoryEntity> subCategories = new HashSet<>();*/
+	/*@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+	private Category category;*/
 	
-	@OneToMany(mappedBy = "category")
-	private List<ProductEntity> products;
+	@JsonIgnore
+	@ManyToMany(mappedBy = "subCategories")
+	private Set<ProductEntity> products = new HashSet<>();
 	
-	public CategoryEntity() {}
+	public SubCategoryEntity() {}
 	
-	public CategoryEntity (Category model) {
+	public SubCategoryEntity (SubCategory model) {
 		this.id = model.getId();
 		this.name = model.getName();
 	}
 	
-	public CategoryEntity (String name) {
+	public SubCategoryEntity (String name) {
 		this.name = name;
 	}
 	public Long getId() {
@@ -54,22 +58,16 @@ public class CategoryEntity {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	/*public Set<SubCategoryEntity> getSubCategories() {
-		return subCategories;
-	}
-	public void setSubCategories(Set<SubCategoryEntity> subCategories) {
-		this.subCategories = subCategories;
-	}
-	public List<ProductEntity> getProducts() {
+	public Set<ProductEntity> getProducts() {
 		return products;
-	}*/
-	public void setProducts(List<ProductEntity> products) {
+	}
+	//Quando trabalamos con coleções, devemos somente usar get
+	public void setProducts(Set<ProductEntity> products) {
 		this.products = products;
 	}
 
-	public Category toModel() {
-		Category model = new Category();
+	public SubCategory toModel() {
+		SubCategory model = new SubCategory();
 		
 		model.setId(this.id);
 		model.setName(this.name);

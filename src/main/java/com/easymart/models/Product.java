@@ -1,6 +1,7 @@
 package com.easymart.models;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 public class Product {
 	
@@ -10,6 +11,7 @@ public class Product {
 	private BigDecimal price;
 	private String photo;
 	private Category category;
+	private Set<SubCategory> subCategories;
 	
 	public Long getId() {
 		return id;
@@ -47,5 +49,11 @@ public class Product {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
+	public Set<SubCategory> getSubCategories() {
+		return subCategories;
+	}
+	public void setSubCategories(Set<SubCategory> subCategories) {
+		this.subCategories = subCategories;
+	}	
 	
 }
