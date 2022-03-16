@@ -27,6 +27,7 @@ import com.easymart.models.Product;
 @Entity
 @Table(name = "tb_produto")
 public class ProductEntity {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -60,6 +61,13 @@ public class ProductEntity {
 		this.description = model.getDescription();
 		this.price = model.getPrice();
 		this.photo = model.getPhoto();
+		
+		if( model.getCategory() != null ) {
+			this.category = new CategoryEntity(model.getCategory());
+		}	
+		if( model.getSubCategories() != null ) {
+			this.subCategories = model.getSubCategories().stream().map(a -> new SubCategoryEntity(a)).collect(Collectors.toSet());
+		}		
 	}
 	
 	public ProductEntity(String name, String description, BigDecimal price, String photo) {
@@ -120,6 +128,7 @@ public class ProductEntity {
 		model.setDescription(this.description);
 		model.setPrice(this.price);
 		model.setPhoto(this.photo);
+		
 		if(this.category != null) {
 			model.setCategory(this.category.toModel());
 		}

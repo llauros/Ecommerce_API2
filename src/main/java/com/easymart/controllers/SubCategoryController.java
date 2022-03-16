@@ -31,10 +31,11 @@ public class SubCategoryController {
 	public ResponseEntity<List<SubCategoryPresenter>> findAll() {
 		List<SubCategory> result = this.service.findAll();
 
-		if (result != null) {		
-			return new ResponseEntity(result.stream().map(a -> new SubCategoryPresenter(a)).collect(Collectors.toList()), HttpStatus.OK);
+		if (result != null) {
+			return new ResponseEntity(
+					result.stream().map(a -> new SubCategoryPresenter(a)).collect(Collectors.toList()), HttpStatus.OK);
 		}
-		
+
 		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 
@@ -43,41 +44,39 @@ public class SubCategoryController {
 		SubCategory result = this.service.findById(id);
 
 		if (result != null) {
-			return new ResponseEntity(new SubCategoryPresenter(result), HttpStatus.OK);	
+			return new ResponseEntity(new SubCategoryPresenter(result), HttpStatus.OK);
 		}
-		
-		return new ResponseEntity(HttpStatus.NO_CONTENT);		
+
+		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 
 	@PostMapping
 	public ResponseEntity<SubCategoryPresenter> create(@RequestBody SubCategoryParameter parameter) {
-		
-		if (parameter != null) {
-			SubCategory model = parameter.toModel();
 
-			return new ResponseEntity(new SubCategoryPresenter(this.service.create(model)), HttpStatus.CREATED);	
+		SubCategory results = this.service.create(parameter.toModel());
+
+		if (results != null) {
+			return new ResponseEntity(new SubCategoryPresenter(results), HttpStatus.CREATED);
 		}
-		
+
 		return new ResponseEntity(HttpStatus.OK);
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<SubCategoryPresenter> update(@PathVariable Long id, @RequestBody SubCategoryParameter parameter) {
-		
+	public ResponseEntity<SubCategoryPresenter> update(@PathVariable Long id,
+			@RequestBody SubCategoryParameter parameter) {
+
 		if (parameter != null) {
-			SubCategory user = parameter.toModel();
-			user.setId(id);
 			
-			SubCategory result = this.service.update(user);
-			
-			if(result != null) {				
+			parameter.setId(id);
+			SubCategory result = this.service.update(parameter.toModel());
+
+			if (result != null) {
 				return new ResponseEntity(new SubCategoryPresenter(result), HttpStatus.CREATED);
-			} else {
-				return new ResponseEntity(HttpStatus.NO_CONTENT);	
-			}	
+			}
 		}
-		
-		return new ResponseEntity(HttpStatus.NO_CONTENT);		
+
+		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 
 	@DeleteMapping("/{id}")

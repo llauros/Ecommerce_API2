@@ -41,14 +41,9 @@ public class TestConfig implements CommandLineRunner  {
 		
 		// DATABASE SEEDING FOR USER
 		UserEntity user1, user2;
-		ProductEntity p1, p2, p3, p4, p5, p6, p7;
-		CategoryEntity c1, c2, c3, c4, c5;
-		SubCategoryEntity sc1, sc2, sc3, sc4, sc5, sc6;
-			
-		// DATABASE SEEDING FOR USER
-		user1 = new UserEntity("Maria Brown", "maria@gmail.com", "123456");
-		user2 = new UserEntity("Alex Green", "alex@gmail.com", "123456");
-		userRepository.saveAll(Arrays.asList(user1, user2));
+		ProductEntity p1, p2, p3, p4, p5, p6;
+		CategoryEntity c1, c2, c3;
+		SubCategoryEntity sc1, sc2, sc3, sc4;
 		
 		//DATABASE SEEDING FOR CATEGORY
 		c1 = new CategoryEntity("Moda");
@@ -56,12 +51,12 @@ public class TestConfig implements CommandLineRunner  {
 		c3 = new CategoryEntity("Livros");
 		categoryRepository.saveAll(Arrays.asList(c1, c2, c3));
 		
-		sc1 = new SubCategoryEntity("Moda Feminina");
-		sc2 = new SubCategoryEntity("SmartTVs");
-		sc3 = new SubCategoryEntity("Livros de ação");
-		sc4 = new SubCategoryEntity("Computadores");
+		sc1 = new SubCategoryEntity("Moda Feminina", c1.toModel());
+		sc2 = new SubCategoryEntity("Moda Masculina", c1.toModel());
+		sc3 = new SubCategoryEntity("Computadores", c2.toModel());
+		sc4 = new SubCategoryEntity("Livros de ação", c3.toModel());
 		subCategoryRepository.saveAll(Arrays.asList(sc1, sc2, sc3, sc4));
-		
+				
 		// DATABASE SEEDING FOR PRODUCT
 		p1 = new ProductEntity("The Lord of the Rings", "Lorem ipsum dolor amet", new BigDecimal("90.5"), null);
 		p2 = new ProductEntity("Smart TV", "Nulla eu purus. Maecenas ante", new BigDecimal("2190.0"), null);
@@ -69,8 +64,7 @@ public class TestConfig implements CommandLineRunner  {
 		p4 = new ProductEntity("Redmi X3", "The better smartphone.", new BigDecimal("800.99"), null);
 		p5 = new ProductEntity("Hidratante", "Neutrogena matte 3 em 1", new BigDecimal("20.33"), null);
 		p6 = new ProductEntity("Garrafa de agua", "Vendida em Jundiai", new BigDecimal("1555.99"), null);
-		
-			
+				
 		// ASSOCIAÇÕES
 		p1.getSubCategories().add(sc3);
 		p1.getSubCategories().add(sc2);
@@ -93,6 +87,11 @@ public class TestConfig implements CommandLineRunner  {
 		
 		productRepository.saveAll(Arrays.asList(p1, p2, p3, p4, p5, p6));
 		
+		// DATABASE SEEDING FOR USER
+		user1 = new UserEntity("Maria Brown", "maria@gmail.com", "123456");
+		user2 = new UserEntity("Alex Green", "alex@gmail.com", "123456");
+		userRepository.saveAll(Arrays.asList(user1, user2));
+	
 	}
 
 }

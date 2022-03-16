@@ -4,6 +4,7 @@ public class SubCategory {
 	
 	private Long id;
 	private String name;
+	private Category category;
 	/*private List<Product> products;*/
 	
 	public Long getId() {
@@ -18,6 +19,14 @@ public class SubCategory {
 	public void setName(String name) {
 		this.name = name;
 	}
+	public Category getCategory() {
+		return category;
+	}
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+	
+	
 	/*public List<Product> getProducts() {
 		return products;
 	}

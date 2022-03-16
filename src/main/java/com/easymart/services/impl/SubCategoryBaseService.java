@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.easymart.entities.CategoryEntity;
 import com.easymart.entities.SubCategoryEntity;
 import com.easymart.models.SubCategory;
+import com.easymart.repositories.CategoryRepository;
 import com.easymart.repositories.SubCategoryRepository;
 import com.easymart.services.SubCategoryService;
 
@@ -20,6 +22,9 @@ public class SubCategoryBaseService implements SubCategoryService{
 
 	@Autowired
 	private SubCategoryRepository repository;
+	
+	@Autowired
+	private CategoryRepository categoryRepository;
 
 	@Override
 	public List<SubCategory> findAll() {
@@ -44,19 +49,38 @@ public class SubCategoryBaseService implements SubCategoryService{
 	
 	@Override
 	public SubCategory create(SubCategory model) {
-		SubCategoryEntity entity = repository.save(new SubCategoryEntity(model));
 		
-		System.out.println(entity.getId());
-		
-		return entity.toModel();
+		if(model != null) {
+			SubCategoryEntity entity = new SubCategoryEntity(model);
+			
+			if(model.getCategory() != null) {
+				Optional<CategoryEntity> categoryEntity = categoryRepository.findById(model.getCategory().getId());
+				
+				if(categoryEntity.isPresent()) {
+					entity.setCategory(categoryEntity.get());
+					
+					return repository.save(entity).toModel();
+				}				
+			}	
+		}
+
+		return null;
 	}
 
 	@Override
 	public SubCategory update(SubCategory model) {
-			
-		return repository.findById(model.getId()).map( result -> {
+		CategoryEntity category = null;
+		
+		return repository.findById(model.getId()).map( result -> {		
 			
 			result.setName(model.getName());
+			if (model.getCategory() != null) {
+				Optional<CategoryEntity> categoryEntity = categoryRepository.findById(model.getCategory().getId());
+				
+				if(categoryEntity.isPresent()) {
+					result.setCategory(categoryEntity.get());
+				}
+			}
 			
 			return repository.save(result).toModel();
 		}).orElseGet(() -> {

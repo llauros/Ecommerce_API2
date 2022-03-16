@@ -5,14 +5,16 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
+import com.easymart.models.Category;
 import com.easymart.models.SubCategory;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -24,13 +26,12 @@ public class SubCategoryEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotBlank(message = "O campo nome não pode estar em branco ou ser nulo")
-	@Size(min = 3, max = 100, message = "O campo nome não pode conter menos que {min} e não deve ultrapassar a {max} caracteres")
 	@Column(name = "nome", length = 100)
 	private String name;
 	
-	/*@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
-	private Category category;*/
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_categoria")
+	private CategoryEntity category;
 	
 	@JsonIgnore
 	@ManyToMany(mappedBy = "subCategories")
@@ -41,11 +42,21 @@ public class SubCategoryEntity {
 	public SubCategoryEntity (SubCategory model) {
 		this.id = model.getId();
 		this.name = model.getName();
+		
+		if(model.getCategory() != null) {
+			this.category = new CategoryEntity(model.getCategory());
+		}
+	}	
+	
+	// Ambiente de Testes
+	public SubCategoryEntity (String name, Category model) {
+		this.name = name;
+		
+		if(model != null) {
+			this.category = new CategoryEntity(model);
+		}
 	}
 	
-	public SubCategoryEntity (String name) {
-		this.name = name;
-	}
 	public Long getId() {
 		return id;
 	}
@@ -57,6 +68,13 @@ public class SubCategoryEntity {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public CategoryEntity getCategory() {
+		return category;
+	}
+	public void setCategory(CategoryEntity category) {
+		this.category = category;
 	}
 	public Set<ProductEntity> getProducts() {
 		return products;
@@ -74,4 +92,5 @@ public class SubCategoryEntity {
 		
 		return model;
 	}
+	
 }
