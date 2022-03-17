@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.easymart.entities.CategoryEntity;
 import com.easymart.entities.ProductEntity;
+import com.easymart.entities.SubCategoryEntity;
 import com.easymart.models.Product;
 import com.easymart.repositories.ProductRepository;
 import com.easymart.services.ProductService;
@@ -61,6 +62,9 @@ public class ProductBaseService implements ProductService{
 			result.setPhoto(model.getPhoto());
 			if(model.getCategory() != null) {
 				result.setCategory(new CategoryEntity(model.getCategory()));
+			}
+			if(model.getSubCategories() != null) {
+				result.setSubCategories(model.getSubCategories().stream().map(a -> new SubCategoryEntity(a) ).collect(Collectors.toSet()) );
 			}
 						
 			return repository.save(result).toModel();
